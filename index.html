@@ -3,181 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kashmir Selling Point | Modern Luxury</title>
+    <title>KSP | Kashmir Selling Point</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
-        
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: #050505; 
-            color: #ffffff;
-            scroll-behavior: smooth;
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .luxury-gradient {
-            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-        }
-
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #050505; color: #fff; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .ksp-gold { color: #d4af37; }
         .bg-ksp-gold { background: #d4af37; }
-
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-
-        /* Animation for SHEIN Bubbles */
+        .hidden-view { display: none !important; }
         .bubble-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="luxury-gradient">
+<body>
 
-    <nav class="sticky top-0 z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center">
-        <div class="text-2xl font-extrabold tracking-tighter">
-            KASHMIR <span class="ksp-gold">SELLING POINT</span>
-        </div>
-        
-        <div class="hidden md:flex space-x-8 text-sm font-medium opacity-70">
-            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('All')">Home</a>
-            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('Mobiles')">Mobiles</a>
-            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('Men')">Men</a>
-            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('Women')">Women</a>
-        </div>
-
-        <div class="flex items-center space-x-6">
-            <i class="fa fa-search opacity-70 cursor-pointer"></i>
-            <div class="relative cursor-pointer" onclick="toggleCart()">
-                <i class="fa fa-shopping-bag text-xl"></i>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-ksp-gold text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+    <div id="login-wall" class="fixed inset-0 z-[2000] bg-black flex items-center justify-center p-6">
+        <div class="glass p-8 rounded-3xl w-full max-w-md text-center">
+            <h1 class="text-3xl font-black mb-2 uppercase italic">KASHMIR <span class="ksp-gold text-2xl">Selling Point</span></h1>
+            <p class="text-xs opacity-50 mb-8 uppercase tracking-widest">Sign in to access the marketplace</p>
+            <div class="space-y-4">
+                <input type="text" id="user-name" placeholder="Username / Email" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-ksp-gold transition">
+                <input type="password" placeholder="Password" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 outline-none focus:border-ksp-gold transition">
+                <button onclick="handleLogin()" class="w-full bg-white text-black font-bold py-4 rounded-xl hover:bg-ksp-gold transition duration-300">ENTER STORE</button>
             </div>
-            <i class="fa fa-user-circle text-xl opacity-70"></i>
-        </div>
-    </nav>
-
-    <div class="bubble-scroll flex overflow-x-auto space-x-6 px-6 py-8">
-        <div class="flex-shrink-0 text-center cursor-pointer" onclick="renderByCat('Mobiles')">
-            <div class="w-16 h-16 rounded-full glass flex items-center justify-center border-ksp-gold/30 border mb-2 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=200" class="object-cover w-full h-full">
-            </div>
-            <span class="text-[10px] font-bold uppercase">Phones</span>
-        </div>
-        <div class="flex-shrink-0 text-center cursor-pointer" onclick="renderByCat('Men')">
-            <div class="w-16 h-16 rounded-full glass flex items-center justify-center border-white/10 border mb-2 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=200" class="object-cover w-full h-full">
-            </div>
-            <span class="text-[10px] font-bold uppercase">Salwar</span>
-        </div>
-        <div class="flex-shrink-0 text-center cursor-pointer" onclick="renderByCat('Groceries')">
-            <div class="w-16 h-16 rounded-full glass flex items-center justify-center border-white/10 border mb-2 overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=200" class="object-cover w-full h-full">
-            </div>
-            <span class="text-[10px] font-bold uppercase">Groceries</span>
-        </div>
-        </div>
-
-    <main class="px-6 pb-20">
-        <div class="flex justify-between items-center mb-8">
-            <h2 id="cat-title" class="text-3xl font-bold tracking-tight">Luxury Arrivals</h2>
-            <div class="flex space-x-2">
-                <button class="px-4 py-2 glass rounded-full text-xs" onclick="filterCondition('New')">New</button>
-                <button class="px-4 py-2 glass rounded-full text-xs" onclick="filterCondition('Used')">Used</button>
-            </div>
-        </div>
-
-        <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            </div>
-    </main>
-
-    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full md:w-[400px] bg-[#0a0a0a] z-[100] transform translate-x-full transition-transform duration-500 p-8 border-l border-white/10">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-2xl font-bold">Your Bag</h2>
-            <i class="fa fa-times text-2xl cursor-pointer" onclick="toggleCart()"></i>
-        </div>
-        <div id="cart-list" class="space-y-6">
-            <p class="opacity-50">Nothing here yet.</p>
-        </div>
-        <div class="absolute bottom-10 left-8 right-8">
-            <div class="flex justify-between mb-4 text-xl font-bold">
-                <span>Total</span>
-                <span id="cart-total">Rs. 0</span>
-            </div>
-            <button class="w-full py-4 bg-ksp-gold text-black font-bold rounded-xl uppercase tracking-widest hover:bg-white transition">Secure Checkout</button>
+            <p class="mt-6 text-[10px] opacity-40">By entering, you agree to our Terms of Service</p>
         </div>
     </div>
 
+    <div id="main-app" class="hidden-view">
+        <nav class="sticky top-0 z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-extrabold tracking-tighter italic">KSP<span class="ksp-gold italic">.pk</span></div>
+            <div class="hidden md:flex space-x-8 text-[11px] font-bold uppercase tracking-widest opacity-70">
+                <button onclick="changeTab('All')" class="nav-link hover:text-ksp-gold">Home</button>
+                <button onclick="changeTab('Electronics')" class="nav-link hover:text-ksp-gold">Electronics</button>
+                <button onclick="changeTab('Men')" class="nav-link hover:text-ksp-gold">Men</button>
+                <button onclick="changeTab('Women')" class="nav-link hover:text-ksp-gold">Women</button>
+            </div>
+            <div class="flex items-center space-x-5">
+                <i class="fa fa-shopping-bag cursor-pointer" onclick="toggleCart()"></i>
+                <div class="w-8 h-8 rounded-full bg-ksp-gold flex items-center justify-center text-black font-bold text-xs" id="user-initial">S</div>
+            </div>
+        </nav>
+
+        <div id="bubble-container" class="bubble-scroll flex overflow-x-auto space-x-6 px-6 py-8">
+            </div>
+
+        <main class="px-6 pb-24">
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <p class="text-[10px] ksp-gold font-bold uppercase tracking-[0.2em] mb-1">Discover</p>
+                    <h2 id="view-title" class="text-3xl font-extrabold italic">All Selection</h2>
+                </div>
+            </div>
+            <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                </div>
+        </main>
+    </div>
+
     <script>
-        // MASTER DATABASE (Mocking your Prisma/Google Sheets integration)
+        // CORE DATABASE
         const products = [
-            { id: 1, name: "Premium Pashmina Salwar", cat: "Men", sub: "Salwar", price: 8500, cond: "New", img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=500", seller: "S01", status: "Active" },
-            { id: 2, name: "iPhone 15 Pro - Titanium", cat: "Mobiles", sub: "Apple", price: 345000, cond: "New", img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500", seller: "S02", status: "Active" },
-            { id: 3, name: "Vintage Used Denim", cat: "Men", sub: "Jeans", price: 4500, cond: "Used", img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500", seller: "S03", status: "Blocked" },
-            { id: 4, name: "Organic Kashmiri Saffron", cat: "Groceries", sub: "Spices", price: 2500, cond: "New", img: "https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500", seller: "S01", status: "Active" }
+            // ELECTRONICS SECTION
+            { id: 1, name: "Samsung 860 EVO SSD", cat: "Electronics", sub: "Storage", price: 1600, cond: "Used", img: "https://images.unsplash.com/photo-1597872200969-2b65dff80244?w=500", status: "Active" },
+            { id: 2, name: "iPhone 15 Pro Max", cat: "Electronics", sub: "Phones", price: 345000, cond: "New", img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500", status: "Active" },
+            // MEN SECTION (SALWAR MOVED HERE)
+            { id: 3, name: "Premium Cotton Salwar Kameez", cat: "Men", sub: "Salwar", price: 5500, cond: "New", img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=500", status: "Active", sizes: ["M", "L", "XL"] },
+            { id: 4, name: "Men's Slim Fit Tracksuit", cat: "Men", sub: "Sports", price: 3200, cond: "New", img: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500", status: "Active", sizes: ["S", "M", "L"] },
+            // WOMEN SECTION
+            { id: 5, name: "Embroidered Lawn Suit", cat: "Women", sub: "Unstitched", price: 7800, cond: "New", img: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=500", status: "Active" },
+            // GROCERIES SECTION
+            { id: 6, name: "Fresh Garden Mix", cat: "Groceries", sub: "Vegetables", price: 450, cond: "New", img: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500", status: "Active" }
         ];
 
-        let cart = [];
+        function handleLogin() {
+            const user = document.getElementById('user-name').value;
+            if(!user) return alert("Please enter your ID");
+            document.getElementById('user-initial').innerText = user.charAt(0).toUpperCase();
+            document.getElementById('login-wall').style.display = 'none';
+            document.getElementById('main-app').classList.remove('hidden-view');
+            changeTab('All');
+        }
 
-        function renderProducts(data) {
-            const grid = document.getElementById('product-grid');
-            // THE ADMIN RULE: Filter out "Blocked" sellers automatically
-            const activeItems = data.filter(p => p.status === "Active");
+        function changeTab(category) {
+            document.getElementById('view-title').innerText = category === 'All' ? "Luxury Arrivals" : category;
             
-            grid.innerHTML = activeItems.map(p => `
-                <div class="card group relative">
-                    <div class="relative overflow-hidden rounded-2xl aspect-[3/4]">
-                        <div class="absolute top-4 left-4 z-10 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter">${p.cond}</div>
-                        <img src="${p.img}" class="object-cover w-full h-full transition duration-700 group-hover:scale-110">
-                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                            <button onclick="addToCart(${p.id})" class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition">Add to Bag</button>
-                        </div>
+            // 1. Logic to update SHEIN Bubbles based on Category (Fixes the Salwar/Food mix-up)
+            const bubbles = document.getElementById('bubble-container');
+            if (category === 'Electronics') {
+                bubbles.innerHTML = `
+                    <div class="flex-shrink-0 text-center"><div class="w-14 h-14 rounded-full glass flex items-center justify-center mb-2 overflow-hidden"><img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=100" class="w-full h-full object-cover"></div><span class="text-[9px] font-bold">PHONES</span></div>
+                    <div class="flex-shrink-0 text-center"><div class="w-14 h-14 rounded-full glass flex items-center justify-center mb-2 overflow-hidden"><img src="https://images.unsplash.com/photo-1597872200969-2b65dff80244?w=100" class="w-full h-full object-cover"></div><span class="text-[9px] font-bold">HARD DRIVES</span></div>
+                `;
+            } else if (category === 'Men') {
+                bubbles.innerHTML = `
+                    <div class="flex-shrink-0 text-center"><div class="w-14 h-14 rounded-full glass flex items-center justify-center mb-2 overflow-hidden"><img src="https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=100" class="w-full h-full object-cover"></div><span class="text-[9px] font-bold">SALWAR</span></div>
+                    <div class="flex-shrink-0 text-center"><div class="w-14 h-14 rounded-full glass flex items-center justify-center mb-2 overflow-hidden"><img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?w=100" class="w-full h-full object-cover"></div><span class="text-[9px] font-bold">SUITS</span></div>
+                `;
+            } else {
+                bubbles.innerHTML = `
+                    <div class="flex-shrink-0 text-center" onclick="changeTab('Electronics')"><div class="w-14 h-14 rounded-full glass flex items-center justify-center mb-2 border-ksp-gold border"><i class="fa fa-laptop text-xs"></i></div><span class="text-[9px] font-bold">TECH</span></div>
+                    <div class="flex-shrink-0 text-center" onclick="changeTab('Men')"><div class="w-14 h-14 rounded-full glass flex items-center justify-center mb-2 border-white/10 border"><i class="fa fa-tshirt text-xs"></i></div><span class="text-[9px] font-bold">MEN</span></div>
+                `;
+            }
+
+            // 2. Filter Grid Strictly (Removes out-of-category items)
+            const filtered = category === 'All' ? products : products.filter(p => p.cat === category);
+            renderGrid(filtered);
+        }
+
+        function renderGrid(data) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = data.map(p => `
+                <div class="glass rounded-2xl overflow-hidden flex flex-col h-full">
+                    <div class="relative h-48">
+                        <span class="absolute top-2 left-2 z-10 bg-white text-black text-[8px] font-black px-2 py-0.5 rounded-full uppercase">${p.cond}</span>
+                        <img src="${p.img}" class="w-full h-full object-cover">
                     </div>
-                    <div class="mt-4 px-2">
-                        <h4 class="text-sm opacity-70 font-medium">${p.name}</h4>
-                        <p class="text-lg font-bold mt-1">Rs. ${p.price.toLocaleString()}</p>
-                        ${p.cat === 'Men' || p.cat === 'Women' ? 
-                          `<select class="mt-2 w-full bg-transparent border-white/10 border rounded p-1 text-[10px]">
-                            <option>Size: M</option><option>Size: L</option><option>Size: XL</option>
-                           </select>` : ''}
+                    <div class="p-4 flex flex-col flex-grow">
+                        <h4 class="text-[11px] font-bold opacity-80 mb-1 h-8 overflow-hidden uppercase tracking-tight">${p.name}</h4>
+                        <p class="text-sm font-black ksp-gold mb-3">PKR ${p.price.toLocaleString()}</p>
+                        ${p.sizes ? `
+                            <select class="mb-3 w-full bg-white/5 border border-white/10 rounded-lg p-2 text-[10px] outline-none">
+                                ${p.sizes.map(s => `<option value="${s}">Size: ${s}</option>`).join('')}
+                            </select>
+                        ` : ''}
+                        <button class="mt-auto w-full bg-white text-black text-[10px] font-bold py-3 rounded-xl hover:bg-ksp-gold transition">BUY NOW</button>
                     </div>
                 </div>
             `).join('');
         }
-
-        function renderByCat(cat) {
-            const filtered = cat === 'All' ? products : products.filter(p => p.cat === cat);
-            document.getElementById('cat-title').innerText = cat + " Selection";
-            renderProducts(filtered);
-        }
-
-        function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('translate-x-full');
-        }
-
-        function addToCart(id) {
-            const p = products.find(i => i.id === id);
-            cart.push(p);
-            document.getElementById('cart-count').innerText = cart.length;
-            updateCartList();
-        }
-
-        function updateCartList() {
-            const list = document.getElementById('cart-list');
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            list.innerHTML = cart.map(i => `
-                <div class="flex justify-between items-center">
-                    <span class="text-sm">${i.name}</span>
-                    <span class="font-bold">Rs. ${i.price}</span>
-                </div>
-            `).join('');
-            document.getElementById('cart-total').innerText = "Rs. " + total.toLocaleString();
-        }
-
-        window.onload = () => renderProducts(products);
     </script>
 </body>
 </html>
