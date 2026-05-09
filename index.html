@@ -3,116 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KSP | Kashmir Selling Point</title>
+    <title>Kashmir Selling Point | Modern Luxury</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --main-green: #accb96; --ksp-dark: #121212; --gray: #f4f4f4; }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--gray); padding-bottom: 60px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #050505; 
+            color: #ffffff;
+            scroll-behavior: smooth;
+        }
 
-        /* HEADER & SEARCH */
-        .navbar { background: white; padding: 10px 5%; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .logo { font-size: 22px; font-weight: 900; margin-bottom: 10px; text-align: center; }
-        .logo span { color: var(--main-green); }
-        .search-area { display: flex; background: #eee; border-radius: 4px; padding: 5px 15px; align-items: center; }
-        .search-area input { border: none; background: transparent; width: 100%; padding: 8px; outline: none; }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-        /* TOP TABS (Amazon Logic) */
-        .category-tabs { display: flex; background: var(--ksp-dark); color: white; overflow-x: auto; padding: 12px 5%; gap: 20px; font-size: 13px; }
-        .category-tabs div { white-space: nowrap; cursor: pointer; opacity: 0.8; }
-        .category-tabs div.active { opacity: 1; color: var(--main-green); border-bottom: 2px solid var(--main-green); }
+        .luxury-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+        }
 
-        /* SUB-CATEGORY BUBBLES (SHEIN Style) */
-        .bubbles { display: flex; overflow-x: auto; padding: 20px 5%; gap: 15px; background: white; }
-        .bubble-item { text-align: center; min-width: 75px; cursor: pointer; }
-        .circle { width: 65px; height: 65px; border-radius: 50%; background: #eee; margin: 0 auto 8px; border: 2px solid #ddd; overflow: hidden; }
-        .circle img { width: 100%; height: 100%; object-fit: cover; }
-        .bubble-item span { font-size: 11px; font-weight: 600; color: #555; }
+        .ksp-gold { color: #d4af37; }
+        .bg-ksp-gold { background: #d4af37; }
 
-        /* PRODUCT GRID */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
-        .card { background: white; border-radius: 8px; overflow: hidden; position: relative; }
-        .card img { width: 100%; height: 220px; object-fit: cover; }
-        .card-details { padding: 10px; }
-        .price { color: #e91e63; font-weight: bold; font-size: 16px; }
-        .condition-tag { position: absolute; top: 10px; left: 10px; background: black; color: white; padding: 2px 8px; font-size: 10px; border-radius: 3px; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
-        /* CART BUTTON */
-        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--main-green); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 24px; cursor: pointer; z-index: 2000; }
-        #cart-count { position: absolute; top: 0; right: 0; background: red; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+        /* Animation for SHEIN Bubbles */
+        .bubble-scroll::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body>
+<body class="luxury-gradient">
 
-    <nav class="navbar">
-        <div class="logo">KASHMIR <span>SELLING POINT</span></div>
-        <div class="search-area">
-            <i class="fa fa-search"></i>
-            <input type="text" placeholder="Search for Mobile, Clothes, Shoes...">
-            <i class="fa fa-camera"></i>
+    <nav class="sticky top-0 z-50 glass border-b border-white/5 px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-extrabold tracking-tighter">
+            KASHMIR <span class="ksp-gold">SELLING POINT</span>
+        </div>
+        
+        <div class="hidden md:flex space-x-8 text-sm font-medium opacity-70">
+            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('All')">Home</a>
+            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('Mobiles')">Mobiles</a>
+            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('Men')">Men</a>
+            <a href="#" class="hover:opacity-100 transition" onclick="renderByCat('Women')">Women</a>
+        </div>
+
+        <div class="flex items-center space-x-6">
+            <i class="fa fa-search opacity-70 cursor-pointer"></i>
+            <div class="relative cursor-pointer" onclick="toggleCart()">
+                <i class="fa fa-shopping-bag text-xl"></i>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-ksp-gold text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
+            </div>
+            <i class="fa fa-user-circle text-xl opacity-70"></i>
         </div>
     </nav>
 
-    <div class="category-tabs">
-        <div class="active" onclick="showSection('Home')">Home</div>
-        <div onclick="showSection('Mobiles')">Mobiles</div>
-        <div onclick="showSection('Men')">Men</div>
-        <div onclick="showSection('Women')">Women</div>
-        <div onclick="showSection('Groceries')">Groceries</div>
-    </div>
-
-    <div class="bubbles" id="bubble-container">
+    <div class="bubble-scroll flex overflow-x-auto space-x-6 px-6 py-8">
+        <div class="flex-shrink-0 text-center cursor-pointer" onclick="renderByCat('Mobiles')">
+            <div class="w-16 h-16 rounded-full glass flex items-center justify-center border-ksp-gold/30 border mb-2 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=200" class="object-cover w-full h-full">
+            </div>
+            <span class="text-[10px] font-bold uppercase">Phones</span>
+        </div>
+        <div class="flex-shrink-0 text-center cursor-pointer" onclick="renderByCat('Men')">
+            <div class="w-16 h-16 rounded-full glass flex items-center justify-center border-white/10 border mb-2 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=200" class="object-cover w-full h-full">
+            </div>
+            <span class="text-[10px] font-bold uppercase">Salwar</span>
+        </div>
+        <div class="flex-shrink-0 text-center cursor-pointer" onclick="renderByCat('Groceries')">
+            <div class="w-16 h-16 rounded-full glass flex items-center justify-center border-white/10 border mb-2 overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=200" class="object-cover w-full h-full">
+            </div>
+            <span class="text-[10px] font-bold uppercase">Groceries</span>
+        </div>
         </div>
 
-    <div class="grid" id="main-grid"></div>
+    <main class="px-6 pb-20">
+        <div class="flex justify-between items-center mb-8">
+            <h2 id="cat-title" class="text-3xl font-bold tracking-tight">Luxury Arrivals</h2>
+            <div class="flex space-x-2">
+                <button class="px-4 py-2 glass rounded-full text-xs" onclick="filterCondition('New')">New</button>
+                <button class="px-4 py-2 glass rounded-full text-xs" onclick="filterCondition('Used')">Used</button>
+            </div>
+        </div>
 
-    <div class="cart-btn" onclick="alert('Opening Cart...')">
-        <i class="fa fa-shopping-basket"></i>
-        <span id="cart-count">0</span>
+        <div id="product-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            </div>
+    </main>
+
+    <div id="cart-sidebar" class="fixed right-0 top-0 h-full w-full md:w-[400px] bg-[#0a0a0a] z-[100] transform translate-x-full transition-transform duration-500 p-8 border-l border-white/10">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-2xl font-bold">Your Bag</h2>
+            <i class="fa fa-times text-2xl cursor-pointer" onclick="toggleCart()"></i>
+        </div>
+        <div id="cart-list" class="space-y-6">
+            <p class="opacity-50">Nothing here yet.</p>
+        </div>
+        <div class="absolute bottom-10 left-8 right-8">
+            <div class="flex justify-between mb-4 text-xl font-bold">
+                <span>Total</span>
+                <span id="cart-total">Rs. 0</span>
+            </div>
+            <button class="w-full py-4 bg-ksp-gold text-black font-bold rounded-xl uppercase tracking-widest hover:bg-white transition">Secure Checkout</button>
+        </div>
     </div>
 
     <script>
-        // Database simulation (Linking logic for your Google Sheet)
+        // MASTER DATABASE (Mocking your Prisma/Google Sheets integration)
         const products = [
-            { id:1, name:"Mens Silk Salwar Kameez", cat:"Men", sub:"Salwar Kameez", price:6500, cond:"New", img:"https://via.placeholder.com/220", sizes:["S","M","L","XL"] },
-            { id:2, name:"iPhone 14 Pro", cat:"Mobiles", sub:"Apple", price:210000, cond:"Used", img:"https://via.placeholder.com/220" },
-            { id:3, name:"Casual Men's Tracksuit", cat:"Men", sub:"Tracksuits", price:3500, cond:"New", img:"https://via.placeholder.com/220", sizes:["M","L"] }
+            { id: 1, name: "Premium Pashmina Salwar", cat: "Men", sub: "Salwar", price: 8500, cond: "New", img: "https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=500", seller: "S01", status: "Active" },
+            { id: 2, name: "iPhone 15 Pro - Titanium", cat: "Mobiles", sub: "Apple", price: 345000, cond: "New", img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500", seller: "S02", status: "Active" },
+            { id: 3, name: "Vintage Used Denim", cat: "Men", sub: "Jeans", price: 4500, cond: "Used", img: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500", seller: "S03", status: "Blocked" },
+            { id: 4, name: "Organic Kashmiri Saffron", cat: "Groceries", sub: "Spices", price: 2500, cond: "New", img: "https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=500", seller: "S01", status: "Active" }
         ];
 
-        function showSection(section) {
-            const container = document.getElementById('bubble-container');
-            const grid = document.getElementById('main-grid');
-            
-            // 1. Update Sub-Category Bubbles
-            if(section === 'Men') {
-                container.innerHTML = `
-                    <div class="bubble-item"><div class="circle"></div><span>Salwar Kameez</span></div>
-                    <div class="bubble-item"><div class="circle"></div><span>Tracksuits</span></div>
-                    <div class="bubble-item"><div class="circle"></div><span>Shirts</span></div>
-                `;
-            } else if(section === 'Mobiles') {
-                container.innerHTML = `
-                    <div class="bubble-item"><div class="circle"></div><span>New</span></div>
-                    <div class="bubble-item"><div class="circle"></div><span>Used</span></div>
-                `;
-            }
+        let cart = [];
 
-            // 2. Filter Grid strictly
-            const filtered = products.filter(p => p.cat === section);
-            grid.innerHTML = filtered.map(p => `
-                <div class="card">
-                    <div class="condition-tag">${p.cond}</div>
-                    <img src="${p.img}">
-                    <div class="card-details">
-                        <p style="font-size:12px; margin:0;">${p.name}</p>
-                        <div class="price">Rs. ${p.price}</div>
-                        ${p.sizes ? `<select style="width:100%; margin-top:5px;"><option>Choose Size</option>${p.sizes.map(s=>`<option>${s}</option>`)}</select>` : ''}
-                        <button style="width:100%; border:none; background:var(--ksp-dark); color:white; padding:8px; margin-top:8px;">Add to Cart</button>
+        function renderProducts(data) {
+            const grid = document.getElementById('product-grid');
+            // THE ADMIN RULE: Filter out "Blocked" sellers automatically
+            const activeItems = data.filter(p => p.status === "Active");
+            
+            grid.innerHTML = activeItems.map(p => `
+                <div class="card group relative">
+                    <div class="relative overflow-hidden rounded-2xl aspect-[3/4]">
+                        <div class="absolute top-4 left-4 z-10 glass px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter">${p.cond}</div>
+                        <img src="${p.img}" class="object-cover w-full h-full transition duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+                            <button onclick="addToCart(${p.id})" class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm transform translate-y-4 group-hover:translate-y-0 transition">Add to Bag</button>
+                        </div>
+                    </div>
+                    <div class="mt-4 px-2">
+                        <h4 class="text-sm opacity-70 font-medium">${p.name}</h4>
+                        <p class="text-lg font-bold mt-1">Rs. ${p.price.toLocaleString()}</p>
+                        ${p.cat === 'Men' || p.cat === 'Women' ? 
+                          `<select class="mt-2 w-full bg-transparent border-white/10 border rounded p-1 text-[10px]">
+                            <option>Size: M</option><option>Size: L</option><option>Size: XL</option>
+                           </select>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
-        window.onload = () => showSection('Men');
+        function renderByCat(cat) {
+            const filtered = cat === 'All' ? products : products.filter(p => p.cat === cat);
+            document.getElementById('cat-title').innerText = cat + " Selection";
+            renderProducts(filtered);
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('translate-x-full');
+        }
+
+        function addToCart(id) {
+            const p = products.find(i => i.id === id);
+            cart.push(p);
+            document.getElementById('cart-count').innerText = cart.length;
+            updateCartList();
+        }
+
+        function updateCartList() {
+            const list = document.getElementById('cart-list');
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            list.innerHTML = cart.map(i => `
+                <div class="flex justify-between items-center">
+                    <span class="text-sm">${i.name}</span>
+                    <span class="font-bold">Rs. ${i.price}</span>
+                </div>
+            `).join('');
+            document.getElementById('cart-total').innerText = "Rs. " + total.toLocaleString();
+        }
+
+        window.onload = () => renderProducts(products);
     </script>
 </body>
 </html>
