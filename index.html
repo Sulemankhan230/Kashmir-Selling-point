@@ -3,124 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kashmir Selling Point</title>
+    <title>KSP | Kashmir Selling Point</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --ksp-main: #accb96; --dark: #1a1a1a; --glass: rgba(255,255,255,0.1); }
-        body { margin: 0; font-family: 'Inter', sans-serif; background: #f4f4f4; color: #333; }
+        :root { --main-green: #accb96; --ksp-dark: #121212; --gray: #f4f4f4; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--gray); padding-bottom: 60px; }
 
-        /* HEADER */
-        .ksp-header { background: white; padding: 10px 5%; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .logo { font-weight: 900; font-size: 22px; letter-spacing: 1px; }
-        .logo span { color: var(--ksp-main); }
-        
-        .search-container { display: flex; background: #eee; border-radius: 20px; padding: 5px 15px; flex: 0.8; }
-        .search-container input { border: none; background: transparent; width: 100%; padding: 8px; outline: none; }
+        /* HEADER & SEARCH */
+        .navbar { background: white; padding: 10px 5%; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .logo { font-size: 22px; font-weight: 900; margin-bottom: 10px; text-align: center; }
+        .logo span { color: var(--main-green); }
+        .search-area { display: flex; background: #eee; border-radius: 4px; padding: 5px 15px; align-items: center; }
+        .search-area input { border: none; background: transparent; width: 100%; padding: 8px; outline: none; }
 
-        /* CATEGORY BARS (Amazon Style Tabs) */
-        .nav-tabs { display: flex; overflow-x: auto; background: var(--dark); color: white; padding: 10px 5%; gap: 20px; font-size: 13px; }
-        .nav-tabs div { cursor: pointer; white-space: nowrap; opacity: 0.8; }
-        .nav-tabs div:hover { opacity: 1; color: var(--ksp-main); }
+        /* TOP TABS (Amazon Logic) */
+        .category-tabs { display: flex; background: var(--ksp-dark); color: white; overflow-x: auto; padding: 12px 5%; gap: 20px; font-size: 13px; }
+        .category-tabs div { white-space: nowrap; cursor: pointer; opacity: 0.8; }
+        .category-tabs div.active { opacity: 1; color: var(--main-green); border-bottom: 2px solid var(--main-green); }
 
-        /* CIRCLE MENU (SHEIN Style) */
-        .category-circles { display: flex; overflow-x: auto; padding: 20px 5%; gap: 15px; background: white; }
-        .circle-item { text-align: center; min-width: 70px; cursor: pointer; }
-        .circle-img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--ksp-main); margin-bottom: 5px; object-fit: cover; }
+        /* SUB-CATEGORY BUBBLES (SHEIN Style) */
+        .bubbles { display: flex; overflow-x: auto; padding: 20px 5%; gap: 15px; background: white; }
+        .bubble-item { text-align: center; min-width: 75px; cursor: pointer; }
+        .circle { width: 65px; height: 65px; border-radius: 50%; background: #eee; margin: 0 auto 8px; border: 2px solid #ddd; overflow: hidden; }
+        .circle img { width: 100%; height: 100%; object-fit: cover; }
+        .bubble-item span { font-size: 11px; font-weight: 600; color: #555; }
 
-        /* PRODUCT AREA */
-        .main-content { padding: 20px 5%; display: flex; gap: 20px; }
-        .sidebar { width: 200px; display: none; } /* Hidden by default, shows on category click */
-        .product-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
-        
-        .card { background: white; border-radius: 8px; overflow: hidden; position: relative; transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-info { padding: 10px; }
-        .price { font-weight: bold; color: #e91e63; font-size: 16px; }
-        
-        /* CART DRAWER */
-        #cart-sidebar { position: fixed; right: -350px; top: 0; width: 300px; height: 100%; background: white; z-index: 2001; transition: 0.3s; padding: 25px; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
-        .cart-open { right: 0 !important; }
+        /* PRODUCT GRID */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
+        .card { background: white; border-radius: 8px; overflow: hidden; position: relative; }
+        .card img { width: 100%; height: 220px; object-fit: cover; }
+        .card-details { padding: 10px; }
+        .price { color: #e91e63; font-weight: bold; font-size: 16px; }
+        .condition-tag { position: absolute; top: 10px; left: 10px; background: black; color: white; padding: 2px 8px; font-size: 10px; border-radius: 3px; }
 
-        .tag { position: absolute; top: 5px; left: 5px; background: var(--dark); color: white; font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+        /* CART BUTTON */
+        .cart-btn { position: fixed; bottom: 20px; right: 20px; background: var(--main-green); color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-size: 24px; cursor: pointer; z-index: 2000; }
+        #cart-count { position: absolute; top: 0; right: 0; background: red; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
 
-    <header class="ksp-header">
-        <div class="top-row">
-            <div class="logo">KASHMIR <span>SELLING POINT</span></div>
-            <div onclick="toggleCart()" style="cursor:pointer;"><i class="fa fa-shopping-bag"></i> <span id="cart-count">0</span></div>
+    <nav class="navbar">
+        <div class="logo">KASHMIR <span>SELLING POINT</span></div>
+        <div class="search-area">
+            <i class="fa fa-search"></i>
+            <input type="text" placeholder="Search for Mobile, Clothes, Shoes...">
+            <i class="fa fa-camera"></i>
         </div>
-        <div class="search-container">
-            <i class="fa fa-search" style="margin-top:8px;"></i>
-            <input type="text" placeholder="What are you looking for today?">
-        </div>
-    </header>
+    </nav>
 
-    <div class="nav-tabs">
-        <div onclick="showCategory('Home')">Home</div>
-        <div onclick="showCategory('Mobile')">Mobiles</div>
-        <div onclick="showCategory('Men')">Men's Fashion</div>
-        <div onclick="showCategory('Women')">Women's Fashion</div>
-        <div onclick="showCategory('Groceries')">Groceries</div>
-        <div onclick="showCategory('Kitchen')">Kitchen Items</div>
+    <div class="category-tabs">
+        <div class="active" onclick="showSection('Home')">Home</div>
+        <div onclick="showSection('Mobiles')">Mobiles</div>
+        <div onclick="showSection('Men')">Men</div>
+        <div onclick="showSection('Women')">Women</div>
+        <div onclick="showSection('Groceries')">Groceries</div>
     </div>
 
-    <div class="category-circles" id="sub-nav">
+    <div class="bubbles" id="bubble-container">
         </div>
 
-    <div class="main-content">
-        <div class="product-grid" id="market">
-            </div>
-    </div>
+    <div class="grid" id="main-grid"></div>
 
-    <div id="cart-sidebar">
-        <h3>Your Cart</h3>
-        <div id="cart-items">Empty</div>
-        <button style="width:100%; background:var(--dark); color:white; padding:15px; margin-top:20px; border:none;">Checkout</button>
-        <button onclick="toggleCart()" style="margin-top:10px; border:none; background:none;">Close</button>
+    <div class="cart-btn" onclick="alert('Opening Cart...')">
+        <i class="fa fa-shopping-basket"></i>
+        <span id="cart-count">0</span>
     </div>
 
     <script>
+        // Database simulation (Linking logic for your Google Sheet)
         const products = [
-            { id:1, name:"Designer Salwar Kameez", cat:"Men", sub:"Salwar Kameez", price:5500, img:"https://images.unsplash.com/photo-1598514982205-f36b96d1e8d4?w=400", cond:"New", sizes:["S","M","L"] },
-            { id:2, name:"Used iPhone 13", cat:"Mobile", sub:"Phones", price:145000, img:"https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400", cond:"Used" }
+            { id:1, name:"Mens Silk Salwar Kameez", cat:"Men", sub:"Salwar Kameez", price:6500, cond:"New", img:"https://via.placeholder.com/220", sizes:["S","M","L","XL"] },
+            { id:2, name:"iPhone 14 Pro", cat:"Mobiles", sub:"Apple", price:210000, cond:"Used", img:"https://via.placeholder.com/220" },
+            { id:3, name:"Casual Men's Tracksuit", cat:"Men", sub:"Tracksuits", price:3500, cond:"New", img:"https://via.placeholder.com/220", sizes:["M","L"] }
         ];
 
-        let cart = [];
+        function showSection(section) {
+            const container = document.getElementById('bubble-container');
+            const grid = document.getElementById('main-grid');
+            
+            // 1. Update Sub-Category Bubbles
+            if(section === 'Men') {
+                container.innerHTML = `
+                    <div class="bubble-item"><div class="circle"></div><span>Salwar Kameez</span></div>
+                    <div class="bubble-item"><div class="circle"></div><span>Tracksuits</span></div>
+                    <div class="bubble-item"><div class="circle"></div><span>Shirts</span></div>
+                `;
+            } else if(section === 'Mobiles') {
+                container.innerHTML = `
+                    <div class="bubble-item"><div class="circle"></div><span>New</span></div>
+                    <div class="bubble-item"><div class="circle"></div><span>Used</span></div>
+                `;
+            }
 
-        function render(items) {
-            document.getElementById('market').innerHTML = items.map(p => `
+            // 2. Filter Grid strictly
+            const filtered = products.filter(p => p.cat === section);
+            grid.innerHTML = filtered.map(p => `
                 <div class="card">
-                    <span class="tag">${p.cond}</span>
+                    <div class="condition-tag">${p.cond}</div>
                     <img src="${p.img}">
-                    <div class="card-info">
+                    <div class="card-details">
                         <p style="font-size:12px; margin:0;">${p.name}</p>
                         <div class="price">Rs. ${p.price}</div>
-                        ${p.sizes ? `<select style="width:100%; margin:5px 0;"><option>Select Size</option>${p.sizes.map(s=>`<option>${s}</option>`)}</select>` : ''}
-                        <button onclick="addToCart(${p.id})" style="width:100%; padding:8px; background:var(--ksp-main); border:none; color:white; cursor:pointer;">Add to Cart</button>
+                        ${p.sizes ? `<select style="width:100%; margin-top:5px;"><option>Choose Size</option>${p.sizes.map(s=>`<option>${s}</option>`)}</select>` : ''}
+                        <button style="width:100%; border:none; background:var(--ksp-dark); color:white; padding:8px; margin-top:8px;">Add to Cart</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        function showCategory(cat) {
-            const filtered = products.filter(p => p.cat === cat);
-            // Logic for Mobiles: show Used/New buttons
-            if(cat === 'Mobile') {
-                document.getElementById('sub-nav').innerHTML = `
-                    <div class="circle-item" onclick="filterCond('New')"><div class="circle-img"></div><span>New</span></div>
-                    <div class="circle-item" onclick="filterCond('Used')"><div class="circle-img"></div><span>Used</span></div>
-                `;
-            }
-            render(filtered);
-        }
-
-        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('cart-open'); }
-
-        window.onload = () => render(products);
+        window.onload = () => showSection('Men');
     </script>
 </body>
 </html>
