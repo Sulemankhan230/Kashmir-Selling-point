@@ -3,143 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kashmir Selling Point | Premium Store</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap');
-        body { background-color: #080808; color: #ffffff; font-family: sans-serif; }
-        .urdu { font-family: 'Noto Nastaliq Urdu', serif; line-height: 2.8; text-align: right; }
-        .page { display: none; animation: fadeIn 0.5s ease; }
-        .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .gold-text { color: #d4af37; }
-        .gold-bg { background-color: #d4af37; }
-        
-        /* Language Toggle Logic */
-        .lang-en .ur-content { display: none !important; }
-        .lang-en .en-content { display: block !important; }
-        
-        .lang-ur .en-content { display: none !important; }
-        .lang-ur .ur-content { display: block !important; }
-
-        .card-hover:hover { transform: translateY(-5px); border-color: #d4af37; transition: 0.3s; }
-    </style>
+    <title>Kashmir Selling Point</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="lang-en" id="mainBody">
+<body>
 
-    <div class="gold-bg text-black text-center text-[10px] py-1 font-bold tracking-widest uppercase">
-        <span class="en-content">Free Delivery on orders above Rs. 10,000</span>
-        <span class="ur-content">10,000 روپے سے زیادہ کے آرڈر پر فری ڈیلیوری</span>
-    </div>
-
-    <nav class="p-4 bg-black border-b border-zinc-800 sticky top-0 z-50 shadow-2xl">
-        <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div onclick="showPage('home')" class="text-lg font-black gold-text cursor-pointer tracking-tighter">KASHMIR SELLING POINT</div>
-            
-            <div class="hidden md:flex flex-1 mx-6">
-                <input id="searchInput" onkeyup="searchItems()" type="text" placeholder="Search products..." class="w-full bg-zinc-900 border border-zinc-700 rounded-l-lg px-4 py-2 text-sm focus:outline-none focus:border-yellow-600">
-                <button class="gold-bg text-black px-4 rounded-r-lg font-bold">🔍</button>
+    <nav class="navbar">
+        <div class="logo">KSP<span>.pk</span></div>
+        <div class="search-container">
+            <select class="cat-select">
+                <option>All</option>
+                <option>Mobiles</option>
+                <option>Electronics</option>
+            </select>
+            <input type="text" placeholder="Search Kashmir Selling Point">
+            <button class="search-btn"><i class="fa fa-search"></i></button>
+        </div>
+        <div class="nav-tools">
+            <div class="panel-switch">
+                <button onclick="togglePanel('buyer')">Buy</button>
+                <button onclick="togglePanel('seller')">Sell</button>
             </div>
-
-            <div class="flex items-center gap-4">
-                <button onclick="toggleLang()" class="border border-zinc-600 px-3 py-1 rounded text-xs font-bold hover:bg-zinc-800">اردو / EN</button>
+            <div class="cart-box" onclick="toggleCart()">
+                <i class="fa fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+                <p>Cart</p>
             </div>
         </div>
     </nav>
 
-    <div class="bg-zinc-950 flex justify-center gap-8 py-4 border-b border-zinc-900 text-xs font-bold tracking-widest uppercase text-zinc-400">
-        <span onclick="showPage('home')" class="cursor-pointer hover:text-white">Home</span>
-        <span onclick="showPage('gadgets')" class="cursor-pointer hover:text-white">Gadgets</span>
-        <span onclick="showPage('clothes')" class="cursor-pointer hover:text-white">Clothes</span>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h3>Filters</h3>
+            <div class="filter-group">
+                <h4>Delivery Day</h4>
+                <label><input type="checkbox"> Get It Today</label>
+                <label><input type="checkbox"> Get It Tomorrow</label>
+            </div>
+            <div class="filter-group">
+                <h4>Brands</h4>
+                <label><input type="checkbox"> Apple</label>
+                <label><input type="checkbox"> Samsung</label>
+                <label><input type="checkbox"> Xiaomi</label>
+            </div>
+        </aside>
+
+        <div class="content">
+            
+            <section class="featured-cats">
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/41-v8G3S36L._AC_SY200_.jpg"></div>
+                    <p>Mobiles</p>
+                </div>
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/31S1V8Wc6LL._AC_SY200_.jpg"></div>
+                    <p>Household</p>
+                </div>
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/41-P0l69XfL._AC_SY200_.jpg"></div>
+                    <p>Kitchen</p>
+                </div>
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/418V45p+jPL._AC_SY200_.jpg"></div>
+                    <p>Bedding</p>
+                </div>
+            </section>
+
+            <div id="buyer-view" class="view active">
+                <div class="product-grid" id="products"></div>
+            </div>
+
+            <div id="seller-view" class="view">
+                <div class="seller-card">
+                    <h2>List a New Product</h2>
+                    <form id="product-form">
+                        <input type="text" id="p-name" placeholder="Product Name" required>
+                        <input type="number" id="p-price" placeholder="Price (PKR)" required>
+                        
+                        <div class="upload-area">
+                            <label for="img-upload">
+                                <i class="fa fa-cloud-upload"></i>
+                                <p>Click to upload product images</p>
+                            </label>
+                            <input type="file" id="img-upload" accept="image/*" hidden onchange="previewImage(event)">
+                            <div id="image-preview"></div>
+                        </div>
+
+                        <button type="button" class="post-btn" onclick="postProduct()">Post Item for Sale</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <section id="home" class="page active-page">
-        <div class="relative h-[400px] overflow-hidden flex items-center justify-center bg-zinc-900">
-            <div class="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1590033821368-7f7f469b1551?auto=format&fit=crop&q=80')] bg-cover bg-center"></div>
-            <div class="relative z-10 text-center px-4">
-                <h1 class="text-5xl font-bold mb-4 en-content">Kashmir Selling Point</h1>
-                <h1 class="text-5xl urdu ur-content">کشمیر سیلنگ پوائنٹ</h1>
-                <p class="text-zinc-300 max-w-lg mx-auto mb-8 en-content">Premium quality products at your doorstep.</p>
-                <p class="urdu text-xl text-yellow-500 ur-content mb-8">بہترین معیار، بہترین قیمت</p>
-                <button onclick="showPage('gadgets')" class="gold-bg text-black px-8 py-3 rounded-full font-bold hover:scale-105 transition">Shop Now</button>
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="drawer-header">
+            <h3>Your Shopping Cart</h3>
+            <span onclick="toggleCart()">&times;</span>
+        </div>
+        <div id="cart-list"></div>
+        <div class="drawer-footer">
+            <button onclick="showCheckout()">Checkout</button>
+        </div>
+    </div>
+
+    <div id="checkout-modal" class="modal">
+        <div class="modal-box">
+            <h3>Confirm Purchase</h3>
+            <input type="text" placeholder="Full Name">
+            <input type="text" placeholder="Address">
+            <select>
+                <option>EasyPaisa</option>
+                <option>JazzCash</option>
+                <option>Bank Transfer</option>
+                <option>Cash on Delivery</option>
+            </select>
+            <button onclick="alert('Order Placed Successfully!')">Finish Order</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kashmir Selling Point</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">KSP<span>.pk</span></div>
+        <div class="search-container">
+            <select class="cat-select">
+                <option>All</option>
+                <option>Mobiles</option>
+                <option>Electronics</option>
+            </select>
+            <input type="text" placeholder="Search Kashmir Selling Point">
+            <button class="search-btn"><i class="fa fa-search"></i></button>
+        </div>
+        <div class="nav-tools">
+            <div class="panel-switch">
+                <button onclick="togglePanel('buyer')">Buy</button>
+                <button onclick="togglePanel('seller')">Sell</button>
+            </div>
+            <div class="cart-box" onclick="toggleCart()">
+                <i class="fa fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+                <p>Cart</p>
             </div>
         </div>
-    </section>
+    </nav>
 
-    <section id="gadgets" class="page p-10 max-w-7xl mx-auto"><div id="gadgets-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6"></div></section>
-    <section id="clothes" class="page p-10 max-w-7xl mx-auto"><div id="clothes-grid" class="grid grid-cols-1 md:grid-cols-4 gap-6"></div></section>
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h3>Filters</h3>
+            <div class="filter-group">
+                <h4>Delivery Day</h4>
+                <label><input type="checkbox"> Get It Today</label>
+                <label><input type="checkbox"> Get It Tomorrow</label>
+            </div>
+            <div class="filter-group">
+                <h4>Brands</h4>
+                <label><input type="checkbox"> Apple</label>
+                <label><input type="checkbox"> Samsung</label>
+                <label><input type="checkbox"> Xiaomi</label>
+            </div>
+        </aside>
 
-    <section id="checkout" class="page p-10 max-w-2xl mx-auto">
-        <div class="bg-zinc-900 p-8 rounded-2xl border border-zinc-800 shadow-2xl">
-            <h2 class="text-2xl font-bold mb-6 gold-text">Order Details</h2>
-            <div class="space-y-4">
-                <input id="userName" type="text" placeholder="Your Name" class="w-full p-4 bg-black rounded-xl border border-zinc-800 text-white">
-                <input id="userPhone" type="text" placeholder="WhatsApp Number" class="w-full p-4 bg-black rounded-xl border border-zinc-800 text-white">
-                <textarea id="userAddress" placeholder="Home Address" class="w-full p-4 bg-black rounded-xl border border-zinc-800 text-white h-32"></textarea>
-                <button onclick="sendOrder()" class="w-full gold-bg text-black py-4 rounded-xl font-black text-xl">CONFIRM VIA WHATSAPP</button>
+        <div class="content">
+            
+            <section class="featured-cats">
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/41-v8G3S36L._AC_SY200_.jpg"></div>
+                    <p>Mobiles</p>
+                </div>
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/31S1V8Wc6LL._AC_SY200_.jpg"></div>
+                    <p>Household</p>
+                </div>
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/41-P0l69XfL._AC_SY200_.jpg"></div>
+                    <p>Kitchen</p>
+                </div>
+                <div class="cat-item">
+                    <div class="circle"><img src="https://m.media-amazon.com/images/I/418V45p+jPL._AC_SY200_.jpg"></div>
+                    <p>Bedding</p>
+                </div>
+            </section>
+
+            <div id="buyer-view" class="view active">
+                <div class="product-grid" id="products"></div>
+            </div>
+
+            <div id="seller-view" class="view">
+                <div class="seller-card">
+                    <h2>List a New Product</h2>
+                    <form id="product-form">
+                        <input type="text" id="p-name" placeholder="Product Name" required>
+                        <input type="number" id="p-price" placeholder="Price (PKR)" required>
+                        
+                        <div class="upload-area">
+                            <label for="img-upload">
+                                <i class="fa fa-cloud-upload"></i>
+                                <p>Click to upload product images</p>
+                            </label>
+                            <input type="file" id="img-upload" accept="image/*" hidden onchange="previewImage(event)">
+                            <div id="image-preview"></div>
+                        </div>
+
+                        <button type="button" class="post-btn" onclick="postProduct()">Post Item for Sale</button>
+                    </form>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <script>
-        let allItems = [];
-        let selectedProduct = "";
-        const SHEET_ID = '1NuErsJKYdqsmh-dgE8KmZmSLpfque6HJn_P8to20Od0';
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="drawer-header">
+            <h3>Your Shopping Cart</h3>
+            <span onclick="toggleCart()">&times;</span>
+        </div>
+        <div id="cart-list"></div>
+        <div class="drawer-footer">
+            <button onclick="showCheckout()">Checkout</button>
+        </div>
+    </div>
 
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
-            document.getElementById(id).classList.add('active-page');
-            window.scrollTo(0,0);
-        }
+    <div id="checkout-modal" class="modal">
+        <div class="modal-box">
+            <h3>Confirm Purchase</h3>
+            <input type="text" placeholder="Full Name">
+            <input type="text" placeholder="Address">
+            <select>
+                <option>EasyPaisa</option>
+                <option>JazzCash</option>
+                <option>Bank Transfer</option>
+                <option>Cash on Delivery</option>
+            </select>
+            <button onclick="alert('Order Placed Successfully!')">Finish Order</button>
+        </div>
+    </div>
+    :root {
+    --primary: #131921; /* Amazon Dark */
+    --accent: #e47911;  /* Kashmir Selling Point Accent */
+    --bg: #eaeded;
+}
 
-        function toggleLang() { 
-            const body = document.getElementById('mainBody');
-            body.classList.toggle('lang-ur');
-            body.classList.toggle('lang-en');
-        }
+body { font-family: Arial, sans-serif; margin: 0; background-color: var(--bg); }
 
-        fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`)
-            .then(res => res.text()).then(text => {
-                const data = JSON.parse(text.substr(47).slice(0,-2));
-                allItems = data.table.rows.slice(1).map(r => ({
-                    en: r.c[1]?.v || "Product", 
-                    ur: r.c[2]?.v || "", 
-                    price: r.c[3]?.v || "0", 
-                    cat: r.c[4]?.v?.toLowerCase() || "", 
-                    img: r.c[5]?.v || "https://via.placeholder.com/300"
-                }));
-                render(allItems);
-            });
+/* Nav Styles */
+.navbar { background: var(--primary); color: white; display: flex; align-items: center; padding: 10px 20px; gap: 20px; }
+.logo { font-size: 24px; font-weight: bold; }
+.logo span { color: var(--accent); }
 
-        function render(list) {
-            const gGrid = document.getElementById('gadgets-grid');
-            const cGrid = document.getElementById('clothes-grid');
-            gGrid.innerHTML = ''; cGrid.innerHTML = '';
-            list.forEach(p => {
-                const html = `
-                    <div class="bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-800 card-hover p-4">
-                        <img src="${p.img}" class="w-full h-56 object-cover rounded-xl mb-4">
-                        <h3 class="font-bold en-content">${p.en}</h3>
-                        <h3 class="urdu text-xl ur-content gold-text">${p.ur}</h3>
-                        <p class="text-xl font-black mt-2">Rs. ${p.price}</p>
-                        <button onclick="selectedProduct='${p.en}'; showPage('checkout')" class="w-full gold-bg text-black py-3 rounded-xl mt-4 font-bold text-xs uppercase">
-                            Buy Now
-                        </button>
-                    </div>`;
-                if(p.cat.includes('gadget')) gGrid.innerHTML += html;
-                else if(p.cat.includes('clothe')) cGrid.innerHTML += html;
-            });
-        }
+.search-container { flex-grow: 1; display: flex; border-radius: 4px; overflow: hidden; }
+.search-container input { width: 100%; border: none; padding: 10px; }
+.search-btn { background: var(--accent); border: none; padding: 10px 20px; cursor: pointer; }
 
-        function sendOrder() {
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
-            const addr = document.getElementById('userAddress').value;
-            if(!name || !phone || !addr) return alert("Fill all fields!");
+/* Sidebar */
+.main-layout { display: flex; margin-top: 10px; }
+.sidebar { width: 220px; background: white; padding: 20px; height: 100vh; font-size: 14px; }
+.filter-group { border-top: 1px solid #ddd; padding: 10px 0; }
 
-            const msg = `🚀 *NEW ORDER*\nItem: ${selectedProduct}\nName: ${name}\nPhone: ${phone}\nAddress: ${addr}`;
-            window.open(`https://wa.me/923000000000?text=${encodeURIComponent(msg)}`);
-        }
-    </script>
+/* Featured Circles (As seen in your image) */
+.featured-cats { display: flex; gap: 20px; overflow-x: auto; padding: 20px; background: white; margin: 0 10px 20px 10px; }
+.cat-item { text-align: center; min-width: 100px; }
+.circle { width: 80px; height: 80px; border-radius: 50%; background: #f7f7f7; overflow: hidden; margin: 0 auto; border: 1px solid #eee; }
+.circle img { width: 100%; height: 100%; object-fit: contain; }
+
+/* Seller Panel / Upload */
+.seller-card { background: white; padding: 30px; border-radius: 8px; max-width: 500px; margin: 20px auto; }
+.upload-area { border: 2px dashed #ccc; padding: 40px; text-align: center; margin: 20px 0; cursor: pointer; }
+.upload-area:hover { border-color: var(--accent); }
+#image-preview img { width: 100px; margin-top: 10px; border-radius: 5px; }
+
+/* Views */
+.view { display: none; }
+.view.active { display: block; }
+let cart = [];
+
+// Toggle between Buy and Sell panels
+function togglePanel(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById(`${view}-view`).classList.add('active');
+}
+
+// Product Posting Logic for Sellers
+function postProduct() {
+    const name = document.getElementById('p-name').value;
+    const price = document.getElementById('p-price').value;
+    if(!name || !price) return alert("Please fill details");
+    
+    alert(`Success: ${name} is now listed for sale on Kashmir Selling Point!`);
+    togglePanel('buyer');
+}
+
+// Image Preview functionality
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('image-preview');
+        output.innerHTML = `<img src="${reader.result}">`;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+// Cart UI Toggle
+function toggleCart() {
+    document.getElementById('cart-drawer').classList.toggle('open');
+}
+
+function showCheckout() {
+    document.getElementById('checkout-modal').style.display = 'flex';
+}
+    <script src="script.js"></script>
 </body>
 </html>
